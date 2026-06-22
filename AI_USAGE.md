@@ -1,55 +1,70 @@
 # AI Usage Report
 
-**Tool:** Claude (claude.ai)  
+**Tool:** Claude (claude.ai)
+**Conversation:** <PASTE_SHARE_LINK_HERE>
 
 ---
 
-## What I used it for
+## How I used it
 
-### 1. Backend scaffold
-> *"Read the iRail API docs and build an Express API with a single GET /departures?q= endpoint. Handle query validation, station matching, caching, rate limiting, and upstream errors."*
+### 1. Backend
 
-Built the Express backend, iRail client, station matching logic, caching, and unit tests.  
-**Verified:** Hit `localhost:3001/departures?q=Antwerpen` in the browser, checked the JSON shape, confirmed filtering and error responses by hand.
+**Prompt:**
+> "Here is the iRail API docs link. Build an Express backend with a GET /departures?q= endpoint. It should validate the query, match station names, cache results, handle rate limiting and return clean error responses."
 
----
+Claude built the Express backend, iRail client, station matching, caching and unit tests.
 
-### 2. React frontend
-> *"Build a Vite + React frontend that consumes the /departures endpoint — debounced search input, results grouped by station with delay badges and cancelled state."*
-
-Built the initial React UI.  
-**Verified:** Searched several stations in the browser, confirmed the rendered output matched the raw API JSON.
+Tested it by hitting `localhost:3001/departures?q=Antwerpen` in the browser, checked the JSON looked right, and tried edge cases like short queries and unknown routes.
 
 ---
 
-### 3. UI redesign + dark/light theme
-> *"Redesign the UI to a professional standard. Add a dark/light theme toggle persisted in localStorage, skeleton loading states, live clock, auto-refresh with countdown, and a 'Next' pill on the first upcoming train."*
+### 2. Frontend
 
-Full UI redesign with CSS variables, responsive layout, animations, accessibility.  
-**Found and fixed:** Skeleton blocks appeared black in both themes — traced to a CSS rule ordering bug, fixed by moving skeleton colours into CSS custom properties.
+**Prompt:**
+> "Build a React frontend using Vite that calls the /departures endpoint. Search input should trigger as I type, results grouped by station with delay badges and a cancelled state."
 
----
+Claude built the initial React UI.
 
-### 4. Fuzzy search 
-> *"Before writing any code explain the algorithm and trade-offs for typo-tolerant search so 'Antverpen' finds 'Antwerpen-Centraal'."*
-
-Reviewed the proposed approach (approximate substring edit distance, fallback-only, no new dependency) before approving. Claude then implemented it with a dedicated test file.  
-**Verified:** 16 tests passing, including a direct test of the brief's own example.
+Opened it in the browser, searched a few stations, and checked the output matched what the API was returning.
 
 ---
 
-### 5. Config files
-> *"Move all magic numbers, window size, cache TTLs, rate limits, debounce, auto-refresh into config.js files so behaviour can be tuned without touching source code."*
+### 3. UI polish and theming
 
-Created `backend/config.js` and `frontend/src/config.js`. All consuming files updated to import from config.
+**Prompt:**
+> "Redesign the UI so it looks professional. Add a dark and light theme toggle that saves the preference, skeleton loading while data is fetching, a live clock, auto-refresh with a countdown, and highlight the next upcoming train."
+
+Claude did the full redesign with CSS variables, animations, responsive layout and accessibility.
+
+Tested both themes in the browser and spotted that skeleton loading blocks were showing up black in both modes. Turned out to be a CSS ordering bug, got that fixed.
 
 ---
 
-## What I accepted, changed, or caught
+### 4. Fuzzy search
+
+**Prompt:**
+> "Before writing any code, explain how you would add typo-tolerant search so something like Antverpen still finds Antwerpen-Centraal. Walk me through the approach and trade-offs first."
+
+Asked for the explanation upfront since this was optional and I did not want to break what was already working. Once the approach made sense (edit distance, fallback only, no extra libraries) I gave the go-ahead.
+
+Came out with 16 passing tests including the Antverpen example from the spec.
+
+---
+
+### 5. Config
+
+**Prompt:**
+> "There are hardcoded values all over the code like the 15 minute window, cache timings, rate limits, debounce delay and auto-refresh interval. Move them into config.js files so I can change behaviour without touching source code."
+
+Claude created `backend/config.js` and `frontend/src/config.js` and updated all files to import from them.
+
+---
+
+## Honest summary
 
 | | |
 |---|---|
-| **Accepted** | Backend logic, tests, config refactor — after verifying each built and tests passed |
-| **Accepted after review** | Fuzzy search — reviewed the algorithm explanation before any code was written |
-| **Caught and fixed** | Skeleton CSS bug — spotted visually in the browser, not in code review |
-| **Rewritten** | UI changes , dark/light mode bugs |
+| **Accepted** | Backend, tests, fuzzy search, config setup |
+| **Reviewed before accepting** | Fuzzy search algorithm and trade-offs |
+| **Caught myself** | Skeleton CSS bug and dark/light mode colour issues |
+| **Iterated on** | UI layout and theme, went back and forth a couple of times |
