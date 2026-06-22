@@ -1,7 +1,6 @@
 # AI Usage Report
 
 **Tool:** Claude (claude.ai)
-**Conversation:** <PASTE_SHARE_LINK_HERE>
 
 ---
 
